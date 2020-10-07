@@ -1,0 +1,36 @@
+2183  execve("./HelloWorld", ["./HelloWorld"], 0x7fff403d8ae0 /* 52 vars */) = 0
+2183  brk(NULL)                         = 0x557afe2a4000
+2183  arch_prctl(0x3001 /* ARCH_??? */, 0x7ffc2de320e0) = -1 EINVAL (Invalid argument)
+2183  access("/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+2183  openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+2183  fstat(3, {st_mode=S_IFREG|0644, st_size=67187, ...}) = 0
+2183  mmap(NULL, 67187, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7fcfe5a4b000
+2183  close(3)                          = 0
+2183  openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+2183  read(3, "\x7f\x45\x4c\x46\x02\x01\x01\x03\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x3e\x00\x01\x00\x00\x00\xf0\x71\x02\x00\x00\x00\x00\x00"..., 832) = 832
+2183  pread64(3, "\x06\x00\x00\x00\x04\x00\x00\x00\x40\x00\x00\x00\x00\x00\x00\x00\x40\x00\x00\x00\x00\x00\x00\x00\x40\x00\x00\x00\x00\x00\x00\x00"..., 784, 64) = 784
+2183  pread64(3, "\x04\x00\x00\x00\x10\x00\x00\x00\x05\x00\x00\x00\x47\x4e\x55\x00\x02\x00\x00\xc0\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00", 32, 848) = 32
+2183  pread64(3, "\x04\x00\x00\x00\x14\x00\x00\x00\x03\x00\x00\x00\x47\x4e\x55\x00\xf3\xff\x3f\xda\x80\xb8\x17\xc4\x64\xa5\x6e\xed\x59\xff\x09\xdc"..., 68, 880) = 68
+2183  fstat(3, {st_mode=S_IFREG|0755, st_size=2029224, ...}) = 0
+2183  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fcfe5a49000
+2183  pread64(3, "\x06\x00\x00\x00\x04\x00\x00\x00\x40\x00\x00\x00\x00\x00\x00\x00\x40\x00\x00\x00\x00\x00\x00\x00\x40\x00\x00\x00\x00\x00\x00\x00"..., 784, 64) = 784
+2183  pread64(3, "\x04\x00\x00\x00\x10\x00\x00\x00\x05\x00\x00\x00\x47\x4e\x55\x00\x02\x00\x00\xc0\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00", 32, 848) = 32
+2183  pread64(3, "\x04\x00\x00\x00\x14\x00\x00\x00\x03\x00\x00\x00\x47\x4e\x55\x00\xf3\xff\x3f\xda\x80\xb8\x17\xc4\x64\xa5\x6e\xed\x59\xff\x09\xdc"..., 68, 880) = 68
+2183  mmap(NULL, 2036952, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fcfe5857000
+2183  mprotect(0x7fcfe587c000, 1847296, PROT_NONE) = 0
+2183  mmap(0x7fcfe587c000, 1540096, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x25000) = 0x7fcfe587c000
+2183  mmap(0x7fcfe59f4000, 303104, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x19d000) = 0x7fcfe59f4000
+2183  mmap(0x7fcfe5a3f000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1e7000) = 0x7fcfe5a3f000
+2183  mmap(0x7fcfe5a45000, 13528, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7fcfe5a45000
+2183  close(3)                          = 0
+2183  arch_prctl(ARCH_SET_FS, 0x7fcfe5a4a540) = 0
+2183  mprotect(0x7fcfe5a3f000, 12288, PROT_READ) = 0
+2183  mprotect(0x557afdd39000, 4096, PROT_READ) = 0
+2183  mprotect(0x7fcfe5a89000, 4096, PROT_READ) = 0
+2183  munmap(0x7fcfe5a4b000, 67187)     = 0
+2183  fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(0x88, 0), ...}) = 0
+2183  brk(NULL)                         = 0x557afe2a4000
+2183  brk(0x557afe2c5000)               = 0x557afe2c5000
+2183  write(1, "Hello Wolrd\n", 12)     = 12
+2183  exit_group(0)                     = ?
+2183  +++ exited with 0 +++
