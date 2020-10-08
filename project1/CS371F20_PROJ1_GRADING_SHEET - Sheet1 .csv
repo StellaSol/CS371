@@ -4,51 +4,59 @@ If you mark the task “N”, it receives 25% of max possible points for the tas
 If you leave it blank, it receives 0 points. 
 If your mark the task ""A"" or ""P"" but zero work is done for the task, then it receives 0 points.
 Please leave ""score"" cells blank for course staff
-If your code does not build,  your code will not receive more than 50% of max possible points",,,,,
-,,,,,
-,,,,,
-Task1,Max score (%),Your answer/Your self-evalution,1st pass: autograder ,2nd pass: manual review,final score
-How many system calls are placed in total by each HelloWorld program?,4,The java HelloWorld program had 1838 system calls and the C HelloWorld program had 34 system calls,0,,0
-"How many different system calls (i.e., counting only one occurrence of a particular system call) are placed by each HelloWorld program? ",4,Java's program had 47 different system calls and C's program had 13 system calls,0,,0
-"Based on your intuition, on reading man pages, and on the information in the trace files, pick three system calls placed by the Java HelloWorld program and say what you think they do (hint: use man). ",4,"I picked the system calls: execve(), munmap(), mkdir().  The system execve() executes the programm referred to by pathname. The pathname has to be a binary executable or it has to have a script. The system call munmap() maps or unmaps filles or devices into memories. This call creates a new mapping the virtual address of calling process. The system call mkdir() creates a new directory.",0,,0
-"In lecture, we discussed how C library translates a C lib function such as open to sys_open. It is easy to understand how this works for a C program. However, does this still apply to Java programs? State your reasoning with evidence.",4,"Yes, this does apply to Java programs as well. This is evident in the Java API which provides API to the JVM. A specific example would be the write() system call. The write() System call is mapped to ""System.out.print."" This can be shown in this line in the tracefile_java: write(1, ""Hello, World"", 12)      = 12. This line shows that the print method of java is actually mapped to a systeml kole in the kernel, quite similar to C",0,,0
-is tracefile_c generated and checked in?,2,Yes,0,,0
-is tracefile_java generated and checked in?,2,Yes,0,,0
-,,,,Total,0
-,,,,,
-Task2,Max score (%),Your answer/Your self-evalution,1st pass: autograder,2nd pass: manual review,final score
-Is constructor implemented correctly? ,5,A,,,
+If your code does not build,  your code will not receive more than 50% of max possible points",,,,,,
+,,,,,,
+,,,,,,
+Task1,Max score (%),Your answer/Your self-evalution,1st pass: autograder ,2nd pass: manual review,final score,
+How many system calls are placed in total by each HelloWorld program?,4,The java HelloWorld program had 1838 system calls and the C HelloWorld program had 34 system calls,0,4,0,
+"How many different system calls (i.e., counting only one occurrence of a particular system call) are placed by each HelloWorld program? ",4,Java's program had 47 different system calls and C's program had 13 system calls,0,4,0,
+"Based on your intuition, on reading man pages, and on the information in the trace files, pick three system calls placed by the Java HelloWorld program and say what you think they do (hint: use man). ",4,"I picked the system calls: execve(), munmap(), mkdir().  The system execve() executes the programm referred to by pathname. The pathname has to be a binary executable or it has to have a script. The system call munmap() maps or unmaps filles or devices into memories. This call creates a new mapping the virtual address of calling process. The system call mkdir() creates a new directory.",0,4,0,
+"In lecture, we discussed how C library translates a C lib function such as open to sys_open. It is easy to understand how this works for a C program. However, does this still apply to Java programs? State your reasoning with evidence.",4,"Yes, this does apply to Java programs as well. This is evident in the Java API which provides API to the JVM. A specific example would be the write() system call. The write() System call is mapped to ""System.out.print."" This can be shown in this line in the tracefile_java: write(1, ""Hello, World"", 12)      = 12. This line shows that the print method of java is actually mapped to a systeml kole in the kernel, quite similar to C",0,4,0,
+is tracefile_c generated and checked in?,2,Yes,0,2,0,
+is tracefile_java generated and checked in?,2,Yes,0,2,0,
+,,,,Total,20,
+,,,,,,
+Task2,Max score (%),Your answer/Your self-evalution,1st pass: autograder,2nd pass: manual review,final score,
+Is constructor implemented correctly? ,5,A,,,,
 "Is allocate implemented correctly? Does it support
          -- first fit?
          -- best fit?
          -- next fit?
-Does it use list of free blocks and used blocks? and uses own linked list to split/delete blocks?",30,P,,,
+Does it use list of free blocks and used blocks? and uses own linked list to split/delete blocks?",30,P,,"passed one test.
+
+max_size/size/printf seem to have correct logic.
+
+alloc/free are still work in progress.
+
+Design issues:
+1. Nodes in linked list should be private
+2. The policy(NF/BF/FF) should be done at the allocator level, not in list",,
 "Is free implemented correctly?
        -- Does it compact free space?
        -- Does it give a nice error if you free a silly address?
-       -- Use your own linked list to insert and perhaps consolidate blocks?",15,P,,,
-Is size implemented correctly? ,5,P,,,
-Is max_size implemented correctly? ,5,P,,,
+       -- Use your own linked list to insert and perhaps consolidate blocks?",15,P,,1,,
+Is size implemented correctly? ,5,P,,,,
+Is max_size implemented correctly? ,5,P,,,,
 "Is free and used blocks tracked using your own linked list?   
-      -- Can your program output a list of used and free sections in offset order ?",10,P,,,
-,,,,,0
-Task3,Max score (%),Your answer/Your self-evalution,1st pass: autograder,2nd pass: manual review,final score
-Your github repo should be named “CS371”;,"10% total
+      -- Can your program output a list of used and free sections in offset order ?",10,P,,,,
+,,,,,20,
+Task3,Max score (%),Your answer/Your self-evalution,1st pass: autograder,2nd pass: manual review,final score,
+Your github repo should be named “CS371”,,"10% total
 
 missing any one - 5%
 missing two or more - 0%",A,,,0
-"Your github repo CS371 must be private, and you must add the instructor(jyuan2pace) as a collaborator;  ",,A,,,0
-"All your work for this project should be placed under directory “project1”, which is immediately under repo CS371;",,A,,,0
-The trace files for task 1 should be in a folder called task1 under project1; ,,A,,,0
-The source code for task 2 should be in a folder called task2 under project1;,,A,,,0
-This completed grading sheet should be under the folder project1,,A,,,
-,,,,Total,0
-Penalty,,,,,
-Late submission penalty,,,,,
-missing commits from any member,,,,,
-,,,,Total,0
-Extra credits,,,,,
-TBD,,,,,
-TBD,,,,,
-,,,,Total,0
-Final total score,,,,,
+"Your github repo CS371 must be private, and you must add the instructor(jyuan2pace) as a collaborator;  ",,A,,,0,
+"All your work for this project should be placed under directory “project1”, which is immediately under repo CS371;",,A,,,0,
+The trace files for task 1 should be in a folder called task1 under project1, ,,A,,,0
+The source code for task 2 should be in a folder called task2 under project1,,,A,,,0
+This completed grading sheet should be under the folder project1,,A,,,,
+,,,,Total,10,
+Penalty,,,,,,
+Late submission penalty,,,,,,
+missing commits from any member,,,,,,
+,,,,Total,0,
+Extra credits,,,,,,
+TBD,,,,,,
+TBD,,,,,,
+,,,,Total,50,
+Final total score,,,,,,
