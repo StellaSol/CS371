@@ -5,12 +5,8 @@ public abstract class MemoryAllocation {
 	
 	 *
 	 */
-	String algorithm; 
-	int mem_size;
 	
 	public MemoryAllocation(int mem_size, String algorithm) {
-		this.mem_size = mem_size;
-		this.algorithm = algorithm;
 	}
 
 	/*
