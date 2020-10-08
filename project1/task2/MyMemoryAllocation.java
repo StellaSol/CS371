@@ -1,5 +1,3 @@
-import java.util.*;
-
 public class MyMemoryAllocation extends MemoryAllocation {
 	//Attributes
 	String algorithm; 
