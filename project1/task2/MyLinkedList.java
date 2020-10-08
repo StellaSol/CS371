@@ -1,5 +1,4 @@
 import java.util.Iterator;
-
 public class MyLinkedList implements Iterable{ 
   //in addition to other regular list member functions such as insert and delete: (split and consolidate blocks must be implemented at the level of linked list)
    Node head;
