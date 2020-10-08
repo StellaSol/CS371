@@ -15,7 +15,7 @@ public class MyMemoryAllocation extends MemoryAllocation {
 	//Constructor
 	public MyMemoryAllocation(int mem_size, String algorithm) {
 		super(mem_size,algorithm);
-		this.mem_size = mem_size;
+		this.mem_size = mem_size - 1;
 		this.algorithm = algorithm;
 	}
 	
