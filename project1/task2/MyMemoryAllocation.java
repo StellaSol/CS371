@@ -38,7 +38,7 @@ public class MyMemoryAllocation extends MemoryAllocation {
 	
 	 //allocates memory with specified size. If the memory is available the function returns pointer (offset) of the beginning of allocated memory. Otherwise it returns 0.
 	public int alloc(int size) {
-		if(size <= mem_size) {
+		if(size < mem_size) {
 			if (algorithm.equals("BF")) {
 		        offset = used_list.insertNode(offset,size); 
 		        sumSize = free_list.findSum(free_list.head,mem_size);
@@ -48,7 +48,7 @@ public class MyMemoryAllocation extends MemoryAllocation {
 		       }
                 //System.out.print("Offset Value" + offset);
 			}	 
-		else if (algorithm.equals("FF")){
+		/*else if (algorithm.equals("FF")){
 			  offset = used_list.insertNode(offset,size); 
 		        sumSize = free_list.findSum(free_list.head,mem_size);
 		       if(size <= sumSize) {
@@ -56,7 +56,7 @@ public class MyMemoryAllocation extends MemoryAllocation {
 		       }
 		        mem_size = mem_size - size;   
 		
-			}
+			}*/
 	        mem_size = mem_size - size;                	
 
 		}
