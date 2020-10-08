@@ -5,7 +5,6 @@ public class MyMemoryAllocation extends MemoryAllocation {
 	String algorithm; 
 	int mem_size;
 	int offset = 1; //Starting address is 1 
-	int offsetTemp; //holds offset of the current block 
 	int sumSize; //Sum of available size in free list
 	int maxSizeValue; //Returns the Maximum size of a bock in free list
 	
@@ -33,6 +32,7 @@ public class MyMemoryAllocation extends MemoryAllocation {
 		int count2 = free_list.getCount();
 		free_list.printlist(free_list.head, count2);
 
+
 	}
 	
 	
@@ -40,20 +40,28 @@ public class MyMemoryAllocation extends MemoryAllocation {
 	public int alloc(int size) {
 		if(size <= mem_size) {
 			if (algorithm.equals("BF")) {
-                offsetTemp = offset;
 		        offset = used_list.insertNode(offset,size); 
 		        sumSize = free_list.findSum(free_list.head,mem_size);
 		       if(size <= sumSize) {
 		    	   	offset=used_list.BFAlloc(used_list, free_list, size);
+		    	   	free_list.insertionSortSize(free_list.head);
+
 		       }
 		        mem_size = mem_size - size;                	
                 //System.out.print("Offset Value" + offset);
-                }
-			} 
-		//else if (algorithm.equals("FF")){
-		//	return 0;
+			}	 
+		/*else if (algorithm.equals("FF")){
+			  offset = used_list.insertNode(offset,size); 
+		        sumSize = free_list.findSum(free_list.head,mem_size);
+		       if(size <= sumSize) {
+		    	   	offset=used_list.FFAlloc(used_list, free_list, size);
+		       }
+		        mem_size = mem_size - size;   
 		
-		//}else if (algorithm.equals("NF")) {
+			}*/
+		}
+		
+		//else if (algorithm.equals("NF")) {
 		//	return 0;
 		//}else {
 		//	return 0;
@@ -62,6 +70,7 @@ public class MyMemoryAllocation extends MemoryAllocation {
 		else {
 			return 0;
 		}
+		offset = used_list.getPrevOffset(used_list.head);
 		return offset;
 	 }
 
@@ -71,9 +80,10 @@ public class MyMemoryAllocation extends MemoryAllocation {
 	 //if offset is vaid, delete node. 
 	//Frees in the USED LIST
 	 public void free(int address) {
-		 used_list.freeNodeAndInsert(free_list,address);		 
-	     free_list.insertionSortSize(free_list.head);
-	     //free_list.insertionSort(free_list.head);
+		 used_list.freeNodeAndInsert(free_list,address);
+		 free_list.insertionSortSize(free_list.head);
+
+
 	 }
 	 
 	 //Sum of all sizes in memory nodes
@@ -101,6 +111,7 @@ public class MyMemoryAllocation extends MemoryAllocation {
 		return maxSizeValue;
 	}
 }
+
 
 
 
