@@ -40,23 +40,23 @@ public class MyMemoryAllocation extends MemoryAllocation {
 	public int alloc(int size) {
 		if(size < mem_size) {
 			if (algorithm.equals("BF")) {
+				free_list.splitMayDelete();
 		        offset = used_list.insertNode(offset,size); 
 		        sumSize = free_list.findSum(free_list.head,mem_size);
-		       if(size <= sumSize) {
+		        if(size <= sumSize) {
 		    	   	offset=used_list.BFAlloc(used_list, free_list, size);
 		    	   	free_list.insertionSortSize(free_list.head);
-		       }
+		       		}
                 //System.out.print("Offset Value" + offset);
-			}	 
-		/*else if (algorithm.equals("FF")){
-			  offset = used_list.insertNode(offset,size); 
-		        sumSize = free_list.findSum(free_list.head,mem_size);
-		       if(size <= sumSize) {
-		    	   	offset=used_list.FFAlloc(used_list, free_list, size);
-		       }
-		        mem_size = mem_size - size;   
-		
-			}*/
+			   }	 
+			else if (algorithm.equals("FF")){
+			    	offset = used_list.insertNode(offset,size); 
+		        	sumSize = free_list.findSum(free_list.head,mem_size);
+		        	if(size <= sumSize) {
+		    	   	  	offset=used_list.FFAlloc(used_list, free_list, size);
+		        	}
+				}
+			
 	        mem_size = mem_size - size;                	
 
 		}
@@ -81,8 +81,7 @@ public class MyMemoryAllocation extends MemoryAllocation {
 	//Frees in the USED LIST
 	 public void free(int address) {
 		 used_list.freeNodeAndInsert(free_list,address);
-
-
+		 free_list.insertMayCompact(free_list.head);
 	 }
 	 
 	 //Sum of all sizes in memory nodes
