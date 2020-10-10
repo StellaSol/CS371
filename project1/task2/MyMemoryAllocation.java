@@ -23,16 +23,16 @@ public class MyMemoryAllocation extends MemoryAllocation {
 	
 	//prints out blocks in an ascending order of their offsets. 
 	public void print() {
-		//free_list.insertionSort(free_list.head);
+		free_list.insertionSort(free_list);
 		System.out.println("Used/Unavabilable Blocks");
 		int count = used_list.getCount();
-		free_list.printlist(used_list.head, count);
+		free_list.printlist(used_list, count);
 		
 		System.out.println();
 	
 		System.out.println("Free Blocks/Available");
 		int count2 = free_list.getCount();
-		free_list.printlist(free_list.head, count2);
+		free_list.printlist(free_list, count2);
 	
 	}
 	
@@ -41,25 +41,26 @@ public class MyMemoryAllocation extends MemoryAllocation {
 	public int alloc(int size) {
 		if(size < mem_size) {
 			if (algorithm.equals("BF")) {
-		        sumSize = free_list.findSum(free_list.head,mem_size);
-	  	  			used_list.insertNode(offset,size);
-				    free_list.splitMayDelete(used_list,free_list,size);	 
-				    free_list.insertionSort(free_list.head);
+					free_list.insertionSortSize(free_list);
+  	  				used_list.insertNode(offset,size);
+				    free_list.splitMayDelete(used_list,free_list,size);	
+				    
 			}	 
 			else if (algorithm.equals("FF")){
-				 sumSize = free_list.findSum(free_list.head,mem_size);
 	  	  			used_list.insertNode(offset,size);
 				    free_list.splitMayDelete(used_list,free_list,size);	 
-				    free_list.insertionSort(free_list.head);
+				    free_list.insertionSort(free_list);
 			}
+			
 			else if(algorithm.equals("NF")) {
-				 sumSize = free_list.findSum(free_list.head,mem_size);
-	  	  			used_list.insertNode(offset,size);
-				    free_list.splitMayDelete(used_list,free_list,size);	 
-				    free_list.insertionSort(free_list.head);
+				 
+				used_list.insertNode(offset,size);
+				free_list.getNext(free_list);
+			    free_list.splitMayDelete(used_list,free_list,size);	 
+			    free_list.insertionSort(free_list);
+			    
 			}
 					mem_size = mem_size - size;                	
-
 		}
 		
 
@@ -67,7 +68,7 @@ public class MyMemoryAllocation extends MemoryAllocation {
 		else {
 			return 0;
 		}
-		offset = used_list.getPrevOffset(used_list.head);
+		offset = used_list.getPrevOffset(used_list);
 
 		return offset;
 	 }
@@ -77,36 +78,24 @@ public class MyMemoryAllocation extends MemoryAllocation {
 	//Frees in the USED LIST
 	 public void free(int address) {
 		 used_list.freeNodeAndInsert(free_list,address);
-		 free_list.insertMayCompact(free_list.head);
+		 free_list.insertMayCompact(free_list);
 
 	 }
 	 
 	 //Sum of all sizes in memory nodes
 	 @Override
 	public int size() {
-		sumSize = free_list.findSum(free_list.head,mem_size);
+		sumSize = free_list.findSum(free_list,mem_size);
 		return sumSize;
 	}
 
-	 
 	 //returns the biggest size of memory block. Maybe sort it and then get the last node?
 	@Override
 	public int max_size() {
-		/*Iterator itr = free_list.Iterator();
-		
-		while(itr.hasNext()) {
-			sumSize = sumSize + itr.next();
-		}
-		
-		return sumSize;
-		
-		}*/
-		
-		maxSizeValue = free_list.findMaxSize(free_list.head,mem_size);
+		maxSizeValue = free_list.findMaxSize(free_list,mem_size);
 		return maxSizeValue;
 	}
 }
-
 
 
 
