@@ -1,8 +1,8 @@
 import java.util.Iterator;
 public class MyLinkedList implements Iterable{ 
   //in addition to other regular list member functions such as insert and delete: (split and consolidate blocks must be implemented at the level of linked list)
-   private Node head;
-   private Node sorted;
+   Node head;
+   Node sorted;
    int offsetVal;
    int offset;
    int sum;
@@ -14,6 +14,7 @@ public class MyLinkedList implements Iterable{
    private class Node {
 		  int offset; //keeps adding
 		  int size;   //keeps subtracting
+		  int startRange;//Temp to keep offset 
 		  Node next;
 		  
 		  //Constructor 
@@ -46,6 +47,13 @@ public class MyLinkedList implements Iterable{
 		  public void setNext(Node nextVal) {
 			  next = nextVal;
 		  }
+		 
+		  public void setStartRange(int startVal) {
+			  startRange = startVal;
+		  }
+		  public int getStartRange() {
+			  return startRange;
+		  }
 		  
 		  //OTHER METHODS-DO LATER
 		 public String toString() {	
@@ -55,11 +63,13 @@ public class MyLinkedList implements Iterable{
 			            current = current.next;
 			        }	        
 			        return Integer.toString(current.getOffset());
-			    
 		 }
 		 //public boolean is_adjacent(Node other);
 		  
 	}
+   
+   
+
    //ITERATOR
  
 
@@ -90,34 +100,51 @@ public class MyLinkedList implements Iterable{
    
 
    
+//CONTAINS
+   public boolean contains(int addr)
+   {
+     Node current = head;
 
+     while (current != null)
+     {
+       if (current.offset == addr)
+       {
+         return true;
+       }
+
+       current = current.next;
+     }
+
+     return false;
+   }
    
  //NODE INSERTIONS
- public int insertNode(int offset,int size) {
+ public void insertNode(int offset,int size) {
 		Node node = head;
 
 		if (head == null) {
 			offsetVal = 1;
 			head = new Node(offsetVal,size);
+			head.setStartRange(offsetVal);
+
 		}		
 		else {
 			while(node.getNext() != null){
 				node = node.getNext();
 			}
-			node.setNext(new Node(offsetVal,size));			
+			node.setNext(new Node(offsetVal,size));	
+			head.setStartRange(offsetVal);
+
 		}
 		offsetVal += size;
-		
-		return 10;//????
  }
- 
-
  
 
  //INSERTING A NODE WITH EXACT OFFSET AND SIZE
  public void insertFreeNode(int offset,int size) {
 	 if (head == null) {
 			head = new Node(offset,size);
+			head.setStartRange(offset);
 		}
 	 
 	 else {
@@ -126,6 +153,8 @@ public class MyLinkedList implements Iterable{
 				node = node.getNext();
 			}
 			node.setNext(new Node(offset,size));
+			head.next.setStartRange(offset);
+
 		}
  }
  
@@ -139,31 +168,8 @@ public class MyLinkedList implements Iterable{
 	    
 	    return prev.getOffset();
 	}
- /*
- public int mergeTogether(Node headref, int offset, int size) {
-	 	Node current = headref;
-		current.setSize(current.getSize()-size);
-		int tempSize = 0;
-		while(current.getNext()!=null) {
-			current = current.getNext();
-		}
-		current.setNext(new Node(offset,tempSize));
-		return offsetVal;
- }
- */
  
- /*public int newMergedNode(int offset,int size) {
-			Node node = head;
-			offsetVal = offsetVal + node.getOffset();
-			while(node.getNext() != null){
-				node = node.getNext();
-			}
-			node.setNext(new Node(offset,size));
-		
-	  	
-		return offsetVal += size;
-}*/
-  
+ 
 //INSERTION SORT FOR OFFSETS
 //REFERENCE: https://www.geeksforgeeks.org/insertion-sort-for-singly-linked-list/
   public void insertionSort(Node headref) {
@@ -190,8 +196,7 @@ public class MyLinkedList implements Iterable{
 		  }
 		  newNode.next = current.next;
 		  current.next = newNode;
-	  }
-	  
+	  }  
  }
   
  
@@ -227,37 +232,45 @@ public class MyLinkedList implements Iterable{
  
   
  //ALLGORITHMS START HERE
-  public int BFAlloc(MyLinkedList usedList, MyLinkedList freeList, int size) {
+ /* public void BFAlloc(MyLinkedList usedList, MyLinkedList freeList, int size) {
 	  Node headref = freeList.head;
-
+	  Node headref2 = usedList.head;
+	  boolean contains;
 	  while(headref != null) {
-		  if(headref.getSize() == size) {	  
-			 offsetVal = headref.getOffset();
+		  /*if(headref.getSize() == size) { //IF the size is a perfect fit, then move the whole node back into the used list and delete it from the free list
 			 usedList.insertFreeNode(headref.getOffset(),headref.getSize()); //inserts it back to the list
 			 usedList.deleteSecLast();
 			 freeList.freeNode(usedList,headref.getOffset());
-			  break;
+			 break;
 		  }
-		  else if (headref.getSize() != 0 && headref.getSize()-size != -1){
-			  offsetVal = 0;
-			  offsetVal = headref.getOffset();
-			  usedList.insertFreeNode(headref.getOffset(),headref.getSize()-size); //inserts it back to the list
-			  
-			  headref.setSize(headref.getSize()-size); 
-			  usedList.deleteSecLast();
-			 
-			  freeList.freeNode(usedList,headref.getOffset());
-		      break;
+		  
+		   if (size <= headref.getSize()){
+			  if(headref.getOffset() < headref.getRange()) {			  
+				  contains = usedList.contains(headref.getStartRange());
+						  if(contains) {
+							  while (headref2!= null) {
+								  if(headref2.offset == headref.getStartRange()) {
+									  headref2.setSize(headref2.getSize()+size); 
+									  headref.setSize(headref.getSize()-size); 
+									  headref.setOffset(headref.offset+size);	
+									  usedList.deleteFromEnd();
+								  }
+								  headref2 = headref2.next;
+							  }
+							  
+						  } 
+						  else {
+							  usedList.insertFreeNode(headref.getStartRange(),size);	
+							  headref.setSize(headref.getSize()-size); 
+							  headref.setOffset(headref.offset+size);
+							  usedList.deleteSecLast();
+						  }
+			  }    
 		  }
-		  else {
-			  offsetVal = 0;
-		  }
+
 		  headref = headref.next;
-	  }
-	  
-	 
-	  return offsetVal;
-  }
+	  } 
+  }*/
   
   public int FFAlloc(MyLinkedList usedList, MyLinkedList freeList, int size) {
 	  Node headref = freeList.head;
@@ -292,6 +305,7 @@ public class MyLinkedList implements Iterable{
 				 usedList.insertFreeNode(headref.getOffset(),headref.getSize()); //inserts it back to the list
 				 usedList.deleteSecLast();
 				 freeList.freeNode(usedList,headref.getOffset());
+				 
 			  break;
 			 } else {
 				 
@@ -316,6 +330,27 @@ public class MyLinkedList implements Iterable{
                     break; 
                 } */
   //DELETING NODE METHODS
+  
+  public Node removeLastNode(Node head) 
+  { 
+      if (head == null) 
+          return null; 
+
+      if (head.next == null) { 
+          return null; 
+      } 
+
+      // Find the second last node 
+      Node second_last = head; 
+      while (second_last.next.next != null) 
+          second_last = second_last.next; 
+
+      // Change next of second last 
+      second_last.next = null; 
+
+      return head; 
+  } 
+  
   public void deleteSecLast() { //Prevents double allocation when allocating size from free_list
 	    if (head == null) {
 	        return;
@@ -463,9 +498,126 @@ public class MyLinkedList implements Iterable{
  
   
 //if node has enough size, then allocate. Else delete the node
-  public void splitMayDelete() {  
+  public void splitMayDelete(MyLinkedList usedList, MyLinkedList freeList,int size) {  
+	  Node fl = freeList.head;
+	  Node ul = usedList.head;
+	  int sizeTemp;
+	  boolean contains;
+	  boolean contains2;
+	  while(fl != null) {
+		   if (size<=fl.getSize()) {
+				  		  contains = usedList.contains(fl.getStartRange());
+						  if(contains) {
+							  while (ul!= null) {
+								  if(ul.offset == fl.getStartRange()) {
+									  sizeTemp = ul.getSize()+size;
+									  usedList.deleteNode(fl.getStartRange());
+									  usedList.removeLastNode(usedList.head);
+									  usedList.insertFreeNode(fl.getStartRange(),sizeTemp);	
+									  fl.setSize(fl.getSize()-size);
+									  fl.setOffset(fl.offset+size);
+									  if(fl.getSize() == 0) {
+										  freeList.deleteNode(fl.getOffset());
+									  }
+									  break;
+								  }
+								  ul = ul.next;
+							  }		  
+						  } 
+						  else if(!contains) {
+							  usedList.insertFreeNode(fl.getStartRange(),size);	
+							  fl.setSize(fl.getSize()-size); 
+							  fl.setOffset(fl.offset+size);
+							  if(fl.getSize() == 0) {
+								  freeList.deleteNode(fl.getOffset());
+							  }
+						      usedList.deleteSecLast();
+						      break;
+						  }
+			      
+			   	
+			  /* else if(fl.getSize()-size == 0) {
+				   contains2 = usedList.contains(fl.getStartRange());
+				   if(contains2) {
+						  while (ul!= null) {
+							  if(ul.offset == fl.getStartRange()) {
+								  ul.setSize(ul.getSize()+size);
+								  usedList.removeLastNode(usedList.head);
+								  fl.setSize(fl.getSize()-size);
+								  fl.setOffset(fl.offset+size);
+								  System.out.print("it workd");
+								  break;
+							  }
+							  ul = ul.next;
+						  }
+						  
+					  } 
+					  else{
+						  usedList.insertFreeNode(fl.getStartRange(),size);	
+						  fl.setSize(fl.getSize()-size); 
+						  fl.setOffset(fl.offset+size);
+					      usedList.deleteSecLast();
+					      break;
+					  }
+			   }*/
+			}
+			  fl = fl.next;
+		   }
+
+	  }
 	  
-  }
+	  
+  
+/*else if(fl.getSize() == size)  {
+	  System.out.print("Yuggg");
+  //contains2 = usedList.contains(fl.getStartRange());
+ // if(contains2) {
+	  	/*while (ul!= null) {
+	  		if(ul.offset == fl.getStartRange()) {
+	  			ul.setSize(ul.getSize()+size);
+	  			usedList.removeLastNode(usedList.head);
+	  			fl.setSize(fl.getSize()-size);
+	  			fl.setOffset(fl.offset+size);
+	  			freeList.deleteNode(fl.getOffset());
+	  		}
+		  ul = ul.next;
+	  }*/
+	  
+	  
+	  
+	  /*while(headref != null) { //Traversing the freelist to check if split may delete	  
+		  if (size <= headref.getSize()){ // if the size is less than or equal to the block size
+			  if(headref.getOffset() != headref.getRange()) {	// if blocksize offset is less than the end range		  
+				  		 contains = usedList.contains(headref.getStartRange()); 
+						  if(contains) { // if usedList already contains the allocated node with the start range
+							  while (headref2!= null) { //traverse the used list
+								  if(headref2.offset == headref.getStartRange()) {//if the offset is equal to the start range
+									  headref2.setSize(headref2.getSize()+size);  //change the size + size	 
+									  headref.setSize(headref.getSize()-size);  //change the freeList block size by substracting it
+									  headref.setOffset(headref.offset+size);	//change freeList block offset by adding it
+									 // usedList.deleteSecLast();
+								  }
+							  else {
+								  usedList.insertFreeNode(headref.getStartRange(),size);	//if list does not contain already then insert a node at the end of usedlist with the start range and size
+								  headref.setSize(headref.getSize()-size); //change the freeList block size by substracting it
+								  headref.setOffset(headref.offset+size); //change freeList block offset by adding it 
+								  //usedList.deleteSecLast(); 
+							  	}
+								  headref2 = headref2.next;							  
+							  }
+				
+						  }
+			
+			  }
+		  }
+		  
+		  headref = headref.next;
+
+	}*/
+ 
+		  
+	  
+  
   
 //If adjacent with eachother, merge the nodes 
   public void insertMayCompact(Node head) {   	  
@@ -485,21 +637,6 @@ public class MyLinkedList implements Iterable{
 	  			}
 	} 
   
-	  	
-	
-  
-  
-  /*
-  public void MergeTogether(MyLinkedList list, Node curr, Node currNext) {	  
-	  if(curr.getOffset() < currNext.getOffset()) {
-		  curr.setSize(curr.getSize()+currNext.getSize());
-		  list.freeNode(list,currNext.getOffset());
-	  }
-	  else {
-		  currNext.setSize(curr.getSize()+currNext.getSize());
-		  list.freeNode(list,curr.getOffset());
-	  }  	
-  }*/
   
   //PRINTING THE LIST METHOD 
   public void printlist(Node head, int countVal) { 
@@ -520,58 +657,8 @@ public class MyLinkedList implements Iterable{
       } 
       return count; 
   }
-
-
-
   
+ 
 
 }
-
-
-
-
-
-  /*
-public Iterator <Node> Iterator() {
-	return new LinkedListIterator();
-}
-class LinkedListIterator <Node>implements Iterator {  		
-     	 MyLinkedList.Node current = head;
-     	 int offset;
-		@Override
-  		public boolean hasNext() {
-			return current!= null;
-		}
-  		
-		@Override
-		public Object next() {
-            if(hasNext()){
-                int offset = current.getOffset();
-                current = current.next;
-            }
-            return offset;
-        }		
-	}
-*/
-
-
-
-/*Prints the List
-@Override
-public String toString() {
-	return toString(head);
-}
-*/
-
-
-// Sort-by in Java: (needs a class)
-// You may need it to sort your list or you can maintain a sorted list upon insertion
-/*class ByOffset implements Comparator<Node> {
-	@Override
-	public int compare(Node lhs, Node rhs) {
-    return Integer.compare(lhs.offset, rhs.offset);
-  }
-	
-}
-*/
 

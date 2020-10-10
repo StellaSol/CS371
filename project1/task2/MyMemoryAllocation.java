@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 public class MyMemoryAllocation extends MemoryAllocation {
 	
 	//Attributes
@@ -31,8 +33,7 @@ public class MyMemoryAllocation extends MemoryAllocation {
 		System.out.println("Free Blocks/Available");
 		int count2 = free_list.getCount();
 		free_list.printlist(free_list.head, count2);
-
-
+	
 	}
 	
 	
@@ -40,41 +41,36 @@ public class MyMemoryAllocation extends MemoryAllocation {
 	public int alloc(int size) {
 		if(size < mem_size) {
 			if (algorithm.equals("BF")) {
-				free_list.splitMayDelete();
-		        offset = used_list.insertNode(offset,size); 
 		        sumSize = free_list.findSum(free_list.head,mem_size);
-		        if(size <= sumSize) {
-		    	   	offset=used_list.BFAlloc(used_list, free_list, size);
-		    	   	free_list.insertionSortSize(free_list.head);
-		       		}
-                //System.out.print("Offset Value" + offset);
-			   }	 
+	  	  			used_list.insertNode(offset,size);
+				    free_list.splitMayDelete(used_list,free_list,size);	 
+				    free_list.insertionSort(free_list.head);
+			}	 
 			else if (algorithm.equals("FF")){
-			    	offset = used_list.insertNode(offset,size); 
-		        	sumSize = free_list.findSum(free_list.head,mem_size);
-		        	if(size <= sumSize) {
-		    	   	  	offset=used_list.FFAlloc(used_list, free_list, size);
-		        	}
-				}
-			
-	        mem_size = mem_size - size;                	
+				 sumSize = free_list.findSum(free_list.head,mem_size);
+	  	  			used_list.insertNode(offset,size);
+				    free_list.splitMayDelete(used_list,free_list,size);	 
+				    free_list.insertionSort(free_list.head);
+			}
+			else if(algorithm.equals("NF")) {
+				 sumSize = free_list.findSum(free_list.head,mem_size);
+	  	  			used_list.insertNode(offset,size);
+				    free_list.splitMayDelete(used_list,free_list,size);	 
+				    free_list.insertionSort(free_list.head);
+			}
+					mem_size = mem_size - size;                	
 
 		}
 		
-		//else if (algorithm.equals("NF")) {
-		//	return 0;
-		//}else {
-		//	return 0;
-		//}
+
 		
 		else {
 			return 0;
 		}
 		offset = used_list.getPrevOffset(used_list.head);
+
 		return offset;
 	 }
-
-
 
 	//The memory is referenced by its pointer (offset). The function must detect if it is a valid address, that is, the function must detect if the memory was previously allocated.
 	 //if offset is vaid, delete node. 
@@ -82,6 +78,7 @@ public class MyMemoryAllocation extends MemoryAllocation {
 	 public void free(int address) {
 		 used_list.freeNodeAndInsert(free_list,address);
 		 free_list.insertMayCompact(free_list.head);
+
 	 }
 	 
 	 //Sum of all sizes in memory nodes
@@ -90,7 +87,7 @@ public class MyMemoryAllocation extends MemoryAllocation {
 		sumSize = free_list.findSum(free_list.head,mem_size);
 		return sumSize;
 	}
-	
+
 	 
 	 //returns the biggest size of memory block. Maybe sort it and then get the last node?
 	@Override
