@@ -1,9 +1,8 @@
-import Storage.PhyMemory;
 import java.util.*;
 
 public class Policy {
     //ATTRIBUTES
-    private Queue<Integer> q = new LinkedList<>();
+    private Queue <Integer> q = new LinkedList<>();
     private int maxNumFrames;
     public boolean evict = false;
     public int tempPFN;
@@ -17,15 +16,17 @@ public class Policy {
 
     //CONSULTING METHOD TO RETRIEVE AN ARBITRARY PFN -- FIFO
     public VirtMemory.PolicyConsultant consult() {
-        if(q.size() != maxNumFrames){
-            int tempSize = q.size(); 
-            q.add(tempSize);
+        //PROBLEM: A new vpn  needs to get a new PFN... Test 5 keeps stopping at 64 meaning new VPN = Diff Block = new PFN
+        if(q.size() < maxNumFrames){ // if the size of the queue has not reach the maxNumFrames 
+            tempPFN = q.size();
+            q.add(q.size()); //add the size (0...1....2...) to
         }
-        else{
-            tempPFN = q.remove();
-            evict = true;
+        
+        else{//Evict is always true if it doesnt reach max size
+            tempPFN = q.remove(); //removes the head 
+            evict = true; 
             justGotRemoved = true;
-            q.add(tempPFN);
+            q.add(tempPFN); // adds PFN back
         }
         return new VirtMemory.PolicyConsultant(tempPFN, evict,justGotRemoved);
     }

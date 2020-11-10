@@ -12,7 +12,7 @@ public class MyPageTable{
     //PAGE TABLE ATTRIBUTES
     private static int INITIAL_SIZE = 1024;
     private LinkedList<PTE>[] PageTable = new LinkedList [INITIAL_SIZE];
-    LinkedList<PTE> DirtyBitsList = new LinkedList<PTE>(); // can be an array?
+    private LinkedList<PTE> DirtyBitsList = new LinkedList<PTE>(); // can be an array?
     private int indexOfPageTable;
     private PTE head;
 
@@ -36,19 +36,19 @@ public class MyPageTable{
             this.vpn = vpn;
             this.pfn = pfn;
             this.dirty = dirty;
-    
         }
+        
         //Getters of VPN, PFN, Dirty
-        public void setDirtyBit(boolean dirty){
-            this.dirty=dirty;
-        }
-
         public int getVPN(){
             return vpn;
         }
         
         public int getPFN(){
             return pfn;
+        }
+
+        public void setDirtyBit(boolean dirty){
+            this.dirty=dirty;
         }
 
         public boolean getDirtyBit(){
@@ -68,7 +68,7 @@ public class MyPageTable{
     public void put(int hashcode, int pfn){
         int key = hash(hashcode); // Retrieve the index
         head = new PTE(hashcode, pfn, true); //Make an entry with the hashCode/vpn, pfn, dirty bit
-        
+    
         //add entry to both the Page Table and Dirty List
         PageTable[key].add(head); 
         DirtyBitsList.add(head);
@@ -93,7 +93,7 @@ public class MyPageTable{
                 it.next();
             }
         }
-        return -1;
+        return -1; //cant return 0 since it is possible that a pfn can be 0... 
     }
 
     //so a boolean value can be return instead of its associated pfn
@@ -136,31 +136,6 @@ public class MyPageTable{
             }
         }
     }
-    
-    //  public void changeToNotDirty(int hashCode){
-    //     PTE headPTE; 
-    //     int getCounter = 0;
-    //     int key = hash(hashCode); //get the key to traverse through the Page Table
-     
-    //     ListIterator<PTE> it = null;
-    //     it = PageTable[key].listIterator();   
-    
-    //     while(it.hasNext()){
-    //         headPTE = PageTable[key].get(getCounter);
-    //         if(headPTE.vpn == hashCode){ 
-    //             headPTE.setDirtyBit(false);
-    //         }
-    //         else{
-    //             getCounter++;
-    //             it.next();
-    //         }
-    //     }
-    // }
-
-    public int size(){
-        return PageTable.length;
-    }
-
     public LinkedList<PTE> returnDirtyBitsList() {
        return DirtyBitsList;
     }
@@ -168,4 +143,9 @@ public class MyPageTable{
     public void clearDirtyBitsList() {
         DirtyBitsList.clear();
     }
+
+    public int size(){ //TO be used in Virt Memory
+        return PageTable.length;
+    }
+
 }
