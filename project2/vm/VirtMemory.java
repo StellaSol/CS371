@@ -1,19 +1,18 @@
-/* 
-NOTES TO SELF:
-- blockNUM = VPN 
-- Dirty Bit:
-    - TRUE: It's been written to the physical memory 
-    -FALSE: It's been stored to to the DISK so it is not longer dirty / Eviction is happening on a dirty page 
--For write and read: MUST load the page before doing any rights or read
--write(): If it is within the same block(same vpn), same PFN but ofc the PhyAddr will be different due to the offset
-- StartAddr = PFN * 64 
-- Eviction: 
-    -boolean isEvicted will be set to false
-    -WILL be true when it is removed in the policy
-    -if isEvicted = TRUE, then go to that physical addr and STORE it to the disk  
--write_back(): Iterate through the list and store all dirtied pages into the disk
-*/
-
+/**
+ * Notes:
+ * currBlock = vpn
+ * Dirty Bit:
+ * -TRUE: It's been written to the physical memory 
+ * -FALSE: It's been stored to to the DISK so it is not longer dirty / Eviction is happening on a dirty page 
+ * For write and read: MUST load the page before doing any rights or read
+ * write(): If it is within the same block(same vpn), same PFN but ofc the PhyAddr will be different due to the offset
+ * StartAddr = PFN * 64 
+ * Eviction: 
+ * -boolean isEvicted will be set to false
+ * -WILL be true when it is removed in the policy
+ * -if isEvicted = TRUE, then go to that physical addr and STORE it to the disk  
+ * write_back(): Iterate through the list and store all dirtied pages into the disk
+ */
 import Storage.PhyMemory;
 import java.util.*;
 
@@ -73,15 +72,17 @@ public class VirtMemory extends Memory{
         }
 
         else{
+            //Checking to see if it is in the page table
             pfn = PageTable.contains(vpn);
-            // If it is NOT in the Page Table then create an entry and write it to physical memory 
+                // If it is NOT in the Page Table then create an entry and write it to physical memory 
                  if(pfn == -1 ){
                     System.err.print("Page Fault");
-                    getPFN = policy.consult(); //retrieving a PFN
+                    getPFN = policy.consult(); //retrieving a PFN from the PolicyConsultant
                     int tempStartAddr = getPFN.evictedPFN * 64;
-                    phyRam.load(vpn,tempStartAddr);
+                    phyRam.load(vpn,tempStartAddr); // Load the page before any writes
 
-                    if(getPFN.isEvicted = true){ //if eviction is true, then store the whole page into physical memory 
+                    //if eviction is true, then write to PA. 
+                    if(getPFN.isEvicted = true){ 
                         startAddr = getPFN.evictedPFN * 64;  //getting the StartAddr to LOAD
                         pfn = getPFN.evictedPFN;
                         PageTable.put(vpn, pfn); //Adding PTE to the Page Table along with the vpn, pfn
@@ -89,29 +90,30 @@ public class VirtMemory extends Memory{
                         phyRam.write(phyMemAddr,value);//write it to Physical Memory based on Physical Address. 
                     }  
      
+                    //if eviction is false, then store it to disk
                     if(getPFN.isEvicted = false){
                         phyRam.load(vpn,tempStartAddr);
                         phyRam.store(vpn,tempStartAddr); //store this dirty page to the disk
                         PageTable.removePTE(vpn);
                     }
-                    // phyRam.load(vpn,tempStartAddr);
-                    //numWriteBacks++;//Keeping track on how many writes have been built up since last write back  
                 }
+
                 //else it is in the page table contains the vpn, then they are in the same block and so they have the same pfn
                 else{                       
-                        sameBlockPFN = PageTable.contains(vpn);
+                        sameBlockPFN = PageTable.contains(vpn); //obtain that pfn from vpn that is already in the page table
                         if (PageTable.containsVPN(vpn)){ //meaning that it is true, there is a vpn within that block 
                             phyMemAddr = sameBlockPFN * 64 + offset;
                             phyRam.write(phyMemAddr,value);
                         }
                 }
+
                 //Checks if the WriteBacks are 32
                 numWriteBacks++;
+
                 if(numWriteBacks == 32){
                     write_back();
                     numWriteBacks = 0; //reset the counter here because during eviction, you store it right away to storage
                 } 
-
             }  
         }
             
@@ -124,27 +126,24 @@ public class VirtMemory extends Memory{
         
         //Makes Sure the list is not empty
         if(DirtyBitsList.isEmpty() != true){
-            //Iterator for the List
-            ListIterator<MyPageTable.PTE> it = null;
-            it = DirtyBitsList.listIterator();
-            
+        
+            //Go through the DirtyBits List 
             for (int i = 0; i < DirtyBitsList.size(); i++) {
                 vpn = DirtyBitsList.get(i).getVPN();
                 pfn = DirtyBitsList.get(i).getPFN();  
-                    if(vpn != currBlock){ //if not in the same block then just contain 
+                    if(vpn != currBlock){ //if not in the same block then continuously store because each vpn is a different block
                         phyRam.store(currBlock, startAddr);
                         startAddr = pfn * 64;
                         currBlock = vpn;
                     }
                 }
-                if(vpn == currBlock){ //if not in the same block then just contain 
-                phyRam.store(currBlock, startAddr);
+                if(vpn == currBlock){ //if it is in the same block then just store the whole block
+                    phyRam.store(currBlock, startAddr);
                 }
-                
+
                 //Clears everything in the dirty bit list so that 32 new writes can be stored
                 DirtyBitsList.clear();
                 PageTable.clearDirtyBitsList(); 
-                numWriteBacks = 0;
             }
     }
 
@@ -170,7 +169,8 @@ public class VirtMemory extends Memory{
                     //Decided whether to evict or add 
                     getPFN = policy.consult();      
 
-                    if((getPFN.isEvicted = true) && (getPFN.justGotRemoved = false)){ //if eviction is true, then store the whole page into physical memory 
+                    //if eviction is true, then store the whole page into physical memory 
+                    if((getPFN.isEvicted = true) && (getPFN.justGotRemoved = false)){ 
                         //we need to find the vpn that already uses the pfn so we can phyRam.store() to the disk the dirty page
                         sameBlockPFN = PageTable.contains(vpn);
                         int tempStartAddr = getPFN.evictedPFN * 64;
@@ -178,19 +178,22 @@ public class VirtMemory extends Memory{
                         phyRam.load(vpn,startAddr); 
                         phyRam.store(vpn,tempStartAddr); //store this dirty page to the disk
                         PageTable.removePTE(vpn); //remove pte that had the same vpn        
-                    }            
-
-                    startAddr = policy.getPFN() * 64;
-                    phyRam.load(vpn,startAddr); 
-                    PageTable.put(vpn,getPFN.evictedPFN);
-                    phyMemAddr = PageTable.contains(vpn) * 64 + offset;
-                    value =  phyRam.read(phyMemAddr);
+                    }  
+                    //if eviction is false, then just load it into physical memory, add it to page table, read from physical memory        
+                    else{
+                        startAddr = policy.getPFN() * 64;
+                        phyRam.load(vpn,startAddr); 
+                        PageTable.put(vpn,getPFN.evictedPFN);
+                        phyMemAddr = PageTable.contains(vpn) * 64 + offset;
+                        value = phyRam.read(phyMemAddr);
+                    }
                 }
 
             //else it is in the Page Table - Cache Hit
             else{   
                 sameBlockPFN = PageTable.contains(vpn);
-                if (PageTable.containsVPN(vpn)){ //meaning that it is true, there is a vpn within that block 
+                //if it is in the same block then just read from physical memory
+                if (PageTable.containsVPN(vpn)){ 
                     phyMemAddr = sameBlockPFN * 64 + offset;
                     value = phyRam.read(phyMemAddr);
                 }

@@ -19,12 +19,12 @@ public class Policy {
         //PROBLEM: A new vpn  needs to get a new PFN... Test 5 keeps stopping at 64 meaning new VPN = Diff Block = new PFN
         if(q.size() < maxNumFrames){ // if the size of the queue has not reach the maxNumFrames 
             tempPFN = q.size();
-            q.add(q.size()); //add the size (0...1....2...) to
+            q.add(q.size()); //add the size (0...1....2...) to the queue and size will keep incrementing the more you add to it
         }
         
         else{//Evict is always true if it doesnt reach max size
             tempPFN = q.remove(); //removes the head 
-            evict = true; 
+            evict = true;  //sets evict to true
             justGotRemoved = true;
             q.add(tempPFN); // adds PFN back
         }

@@ -12,7 +12,7 @@ public class MyPageTable{
     //PAGE TABLE ATTRIBUTES
     private static int INITIAL_SIZE = 1024;
     private LinkedList<PTE>[] PageTable = new LinkedList [INITIAL_SIZE];
-    private LinkedList<PTE> DirtyBitsList = new LinkedList<PTE>(); // can be an array?
+    private LinkedList<PTE> DirtyBitsList = new LinkedList<PTE>(); //List to keep the PTE's that have been written to physical memory
     private int indexOfPageTable;
     private PTE head;
 
@@ -58,13 +58,14 @@ public class MyPageTable{
   
 
     //PAGE TABLE METHOD STARTS HERE
+
     //Hash function to get the key
     public int hash(int hashcode){
         indexOfPageTable = hashcode % INITIAL_SIZE;
         return indexOfPageTable;
     }
     
-    //Inserting an entry into Page Table in according to the index
+    //Inserting an entry into Page Table in accordance to its key
     public void put(int hashcode, int pfn){
         int key = hash(hashcode); // Retrieve the index
         head = new PTE(hashcode, pfn, true); //Make an entry with the hashCode/vpn, pfn, dirty bit
@@ -74,7 +75,7 @@ public class MyPageTable{
         DirtyBitsList.add(head);
     }
 
-    //Iterating through the Page Table to check if vpn is there. This will return that pfn 
+    //Iterating through the Page Table to check if vpn is there. Will return its corresponding pfn
     public int contains(int hashCode){  
         PTE headPTE; 
         int getCounter = 0;
@@ -82,7 +83,8 @@ public class MyPageTable{
      
         ListIterator<PTE> it = null;
         it = PageTable[key].listIterator();   
-        //now you have the key to the bucket, match the vpn 
+
+        //now you have the key to the bucket, iterate through the list to match the vpn and obtain pfn
         while(it.hasNext()){
             headPTE = PageTable[key].get(getCounter);
             if(headPTE.vpn == hashCode){ 
@@ -93,7 +95,7 @@ public class MyPageTable{
                 it.next();
             }
         }
-        return -1; //cant return 0 since it is possible that a pfn can be 0... 
+        return -1; //cant return 0 since it is possible that a pfn can be 0 
     }
 
     //so a boolean value can be return instead of its associated pfn
@@ -105,6 +107,8 @@ public class MyPageTable{
         ListIterator<PTE> it = null;
         it = PageTable[key].listIterator();   
     
+        
+        //now you have the key to the bucket, iterate through the list to match the vpn and return a boolean value
         while(it.hasNext()){
             headPTE = PageTable[key].get(getCounter);
             if(headPTE.vpn == hashCode){ 
@@ -136,6 +140,7 @@ public class MyPageTable{
             }
         }
     }
+    
     public LinkedList<PTE> returnDirtyBitsList() {
        return DirtyBitsList;
     }
