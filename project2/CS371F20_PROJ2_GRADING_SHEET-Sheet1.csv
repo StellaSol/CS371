@@ -1,0 +1,50 @@
+"For Q&A tasks, fill your answers in the cell, or at least fill “A”, “P” or “N” in all the ”Your self-evaluation” cells. 
+A-all finished   P-Partially finished  N-None finished
+If you mark the task “N”, it receives 25% of max possible points for the task (It does not apply to extra-point tasks).
+If you leave it blank, it receives 0 points. 
+If your mark the task ""A"" or ""P"" but zero work is done for the task, then it receives 0 points.
+Please leave ""score"" cells blank for course staff
+If your code does not build,  your code will not receive more than 50% of max possible points",,,,,
+,,,,,
+,,,,,
+Design (25%),Max score (%),Your answer/Your self-evalution,1st pass: autograder ,2nd pass: manual review,final score
+UML diagram ,10,A,NA,,
+Flow chart of address translation in VirtMemory,5,A,NA,,
+Flow chart of read() in VirtMemory,4,A,NA,,
+Flow chart of write() in VirtMemory,4,A,NA,,
+Flow chart of write_back() in VirtMemory,2,A,NA,,
+,,,,,
+,,,,Total,Total
+,,,,,
+Code style and readability (5%),Max score (%),Your answer/Your self-evalution,1st pass: autograder,2nd pass: manual review,final score
+"All functions with proper comments explaining pre-condition 
+post-conditions",5,A,NA,,
+Tabs or spaces for indentation (and how many spaces) are consistent,,A,,,
+Appropriate use of white space,,A,,,
+Proper naming of variables and functions,,A,,,
+,,,,Total,
+,,,,,
+Implementation (65%),Max score (%),Your answer/Your self-evalution,1st pass: autograder,2nd pass: manual review,final score
+Does your implementation follow your design?,15,A,,,
+Is pagetable implemented using your own hashtable?,10,A,,,
+Is address translation correctly implmented?,4,A,,,
+is eviction policy correctly implemented?,5,A,,,
+"Does read() work?
+      -- is the read redirected to read the correct physical address?
+      -- is page fault properly handled? does it start eviction under memory pressure? Is the target page successfully loaded in from disk to memory? ",4,P,,,
+"Does write() work?
+      -- is the write redirected to read the correct physical address?
+      -- is page fault properly handled? does it start eviction under memory pressure? Is the target page successfully loaded in from disk to memory?
+      -- does the write dirty the page?",5,P,,,
+"Does write_back work?
+    --  are all dirty pages written back to disk when there are enough writes batched?
+    --  are all clean pages not written back?",3,P,,,
+Does it pass all unit tests?,19,P,,,
+,,,,Total,
+Project Structure and Formatting (5%),Max score (%),Your answer/Your self-evalution,1st pass: autograder,2nd pass: manual review,final score
+Your github repo should be named “CS371”;,5,A,,,0
+"Your github repo CS371 must be private, and you must add the instructor(jyuan2pace) as a collaborator;  ",,,,,
+All source code should be immediately under a folder called vm immediately under project1;and all design documents are under folder design immediately under project1,,,,,
+This completed grading sheet i csv format or grading_sheet.txt which includes the link to your completed grading sheet should should be under the folder project1 ,,,,,
+,,,,Total,
+Final total score,,,,Total,
