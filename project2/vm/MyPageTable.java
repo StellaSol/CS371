@@ -11,7 +11,7 @@ import java.io.*;
 
 public class MyPageTable{
     //PAGE TABLE ATTRIBUTES
-    private static int INITIAL_SIZE = 1048;
+    private static int INITIAL_SIZE = 256;
     private LinkedList<PTE>[] PageTable = new LinkedList [INITIAL_SIZE];
     private LinkedList<PTE> DirtyBitsList = new LinkedList<PTE>(); //List to keep the PTE's that have been written to physical memory
     private int indexOfPageTable;
@@ -91,11 +91,11 @@ public class MyPageTable{
     }
 
     //Iterating through the Page Table to check if vpn is there. Will return its corresponding pfn
-    public int get_ptable_pfn(int hashCode){ //this is the get method because it returns the pfn
+    public int get_ptable_pfn(int hashCode) throws NoKeyException{ //this is the get method because it returns the pfn
         PTE headPTE; 
         int getCounter = 0;
         int key = hash(hashCode); //get the key to traverse through the Page Table
-     
+        boolean contains = false;
         ListIterator<PTE> it = null;
         it = PageTable[key].listIterator();   
 
@@ -103,12 +103,16 @@ public class MyPageTable{
         while(it.hasNext()){
             headPTE = PageTable[key].get(getCounter);
             if(headPTE.vpn == hashCode){ 
+                contains = true;
                 return headPTE.getPFN();
             }
             else{
                 getCounter++;
                 it.next();
             }
+        }
+        if (contains!=true){
+            throw new NoKeyException("Key does NOT exist");
         }
         return -1; //cant return 0 since it is possible that a pfn can be 0 
     }
@@ -159,24 +163,6 @@ public class MyPageTable{
         }
     }
 
-    public void remove(int hashCode){
-        PTE headPTE; 
-        int getCounter = 0;
-        int key = hash(hashCode); //get the key to traverse through the Page Table
-        ListIterator<PTE> it = null;
-        it = PageTable[key].listIterator();
-        while(it.hasNext()){
-            headPTE = PageTable[key].get(getCounter);
-            if(headPTE.vpn == hashCode){ 
-                PageTable[key].remove(getCounter);
-            }
-            else{
-                getCounter++;
-                it.next();
-            }
-        }
-
-    }
 
     public LinkedList<PTE> returnDirtyBitsList() {
        return DirtyBitsList;

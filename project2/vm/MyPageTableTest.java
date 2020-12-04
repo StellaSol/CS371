@@ -14,11 +14,10 @@
     2)For contains, get and remove, what if the PageTable is not empty, and it doesn't have the key you try to get/remove? This is a negative case.
         - Have error message
     3)For contains, get and remove, what if the PageTable is not empty, and it DOES have the key you try to get/remove? This is a positive case.
-    4)For put, what if the PageTable is not empty, and it DOES have the key you try to put?  This is a positive case. IF IT DOES have the key, no duplicates? 
-    5)For put, what if the PageTable is not empty, and it does not have the key you try to put?  This is a negative case.
+    4)For put, what if the PageTable is not empty, and it DOES have the key you try to put?  This is a negative case. 
+    5)For put, what if the PageTable is not empty, and it does not have the key you try to put?  This is a positive case.
     
     **** 
-
     In each negative case, your junit test must check if the method exited safely and it is up to you if you'd like to use an additional exception/error message.  
     If it is negative, you can make it throw an exception, and try to catch it and within catch, assert true means the negative case fails as you expected. failing as expected is a "safe out"
     In each positive case, your junit test must check if the method functioned as expected: did the newly added item show up? did the deleted item disappear? did the search find the right stuff in the table? etc.  
@@ -31,6 +30,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -51,58 +52,56 @@ public class MyPageTableTest {
 
 
     @Test
-    public void test2_contains_negativeCase() throws KeyAlreadyExistException {
-        /**
-         * To Do:
-         * - make sure each method exits safely
-         * - use additional error message
-        */ 
+    public void test2_contains_negativeCase() throws KeyAlreadyExistException { //Page Table is NOT empty, and DOES NOT have the key, Result is false, it has been already handled in the method: containsVPN
         MyPageTable myPageTable = new MyPageTable();
-        myPageTable.put(512,1);
-        boolean testContains = myPageTable.containsVPN(256);
-        assertEquals(false, testContains);
-    }
-
-    @Test
-    public void test3_get_negativeCase() throws KeyAlreadyExistException {
-        /**
-         * To Do:
-         * - make sure each method exits safely
-         * - use additional error message
-        */ 
-        MyPageTable myPageTable = new MyPageTable();
-        myPageTable.put(512,1);
-        int testGet = myPageTable.get_ptable_pfn(256);
-        assertEquals(-1, testGet);
-    }
-
-    // @Before
-    // public void setUpStreams() {
-    //     System.setOut(new PrintStream(outContent));
-    //     System.setErr(new PrintStream(errContent));
-    // }
-    @Test
-    public void test4_remove_negativeCase() throws NoKeyException,KeyAlreadyExistException { //Page Table is NOT empty, and DOES NOT have the key
-        /**
-         * To Do:
-         * - make sure each method exits safely
-         * - use additional error message
-        */ 
-        try {
-            MyPageTable myPageTable = new MyPageTable();
-            myPageTable.put(512,1);
-            myPageTable.removePTE(256);
-        } catch (NoKeyException e) {
-           assertEquals("Key does NOT exist", e.getMessage());
+        boolean contains = true;
+        for(int i = 0; i < TEST_SIZE/2 ; i++){ //Filling only the  HALF OF TEST_SIZE  so it has values already
+            myPageTable.put(i,i);
         }
-        //assertEquals("Error - No such item in the PageTable.", errContent.toString());
+
+        for(int j = 0; j < TEST_SIZE; j++){ //Contains will be true ONLY for keys 0-63, once it hits 64, it should be FALSE
+            contains = myPageTable.containsVPN(j);
+            if(contains != true){ //if it is NOT in the page table, then contains is false
+                contains = false;
+            }
+        }
+        
+        assertEquals(false, contains);
     }
 
-    // @After
-    // public void restoreStreams() {
-    //     System.setOut(originalOut);
-    //     System.setErr(originalErr);
-    // }
+    @Test
+    public void test3_get_negativeCase() throws KeyAlreadyExistException {//Page Table is NOT empty, and DOES NOT have the key, Result is exception
+        boolean exception_happened = false;
+        MyPageTable myPageTable = new MyPageTable();
+        for(int i = 0; i < TEST_SIZE/2 ; i++){ //Filling only the  HALF OF TEST_SIZE  so it has values already
+            myPageTable.put(i,i);
+        }
+        try {
+            for(int j = 0; j<TEST_SIZE; j++){ //Only keys 0-63 exist, once it hits 64, exception happens
+                myPageTable.get_ptable_pfn(j);
+            }
+        } catch (NoKeyException e) {
+            exception_happened  = true;
+        }
+        assertEquals(true,exception_happened);
+    }
+
+    @Test
+    public void test4_remove_negativeCase() throws NoKeyException,KeyAlreadyExistException { //Page Table is NOT empty, and DOES NOT have the key, Result is exception
+        boolean exception_happened = false; 
+        MyPageTable myPageTable = new MyPageTable();
+        for(int i = 0; i < TEST_SIZE/2 ; i++){ //Filling only the  HALF OF TEST_SIZE  so it has values already
+            myPageTable.put(i,i);
+        }
+        try {
+            for(int j = 0; j<TEST_SIZE; j++){ //Only keys 0-63 exist, once it hits 64, exception happens
+                myPageTable.removePTE(j);
+            }
+        } catch (NoKeyException e) {
+            exception_happened  = true;
+        }
+        assertEquals(true,exception_happened);
+    }
 
     @Test
     public void test5_contains_get_remove_positiveCase() throws NoKeyException, KeyAlreadyExistException { //Page Table is NOT empty, so it has the key, check if contains, get, remove works
@@ -147,24 +146,26 @@ public class MyPageTableTest {
         assertEquals(true, result3);
     }
 
+    //@Test(expected = KeyAlreadyExistException.class)  
     @Test
-    public void test6_put_negativeCase() throws KeyAlreadyExistException{ //Page Table is NOT empty, but it does have the key
+    public void test6_put_negativeCase() throws KeyAlreadyExistException{ //Page Table is NOT empty, but it does have the key so it exists already
+        boolean exception_happened = false; 
         MyPageTable myPageTable = new MyPageTable();
         for(int i = 0; i < TEST_SIZE ; i++){ //Page Table is not empty so it already has values
             myPageTable.put(i,i);
         }
-
         try{
             for(int j = 0; j < TEST_SIZE; j++){ //Putting values that already exist, should get an exception
                 myPageTable.put(j,j);
             } 
-        }catch(KeyAlreadyExistException e){
-            assertEquals("Key Already Exists", e.getMessage());
+        } catch(KeyAlreadyExistException e){ // We want that exception to happen since we are putting existing values
+            exception_happened = true;
         }
+        assertEquals(true,exception_happened);
     }
 
     @Test
-    public void test7_put_positiveCase() throws KeyAlreadyExistException { // Page Table NOT empty, but does not have the key
+    public void test7_put_positiveCase() throws KeyAlreadyExistException { // Page Table NOT empty, but does not have the key, expected result = make sure keys are put succcessfully
         boolean testContains;
         boolean result1 = true;
 
@@ -181,8 +182,8 @@ public class MyPageTableTest {
         }
 
         for(int k = 0; k < TEST_SIZE; k++){ //Check if Page Table contains the keys that were added including the existing ones  
-            testContains = myPageTable.containsVPN(k);
-            if(testContains != true ){
+            testContains = myPageTable.containsVPN(k); //we want to make sure we successfully put it in the Page Table
+            if(testContains != true ){ //if it is NOT true, then it is NOT in the page table
                 result1 = false;
             }
         }

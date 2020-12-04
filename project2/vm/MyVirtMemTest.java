@@ -10,7 +10,7 @@ public class MyVirtMemTest {
     //        static byte fce2(int adr) {
     //            return (byte) ((adr * 7 + 5) % 256 - 128);
     //        }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws KeyAlreadyExistException {
 
     //     Memory m = new VirtMemory();
     //     m.startup();
@@ -74,6 +74,10 @@ public class MyVirtMemTest {
         //     System.out.println("pruduct" + product);
         // }
         MyPageTable myPageTable = new MyPageTable();
+        myPageTable.put(1,1);
+        myPageTable.put(2,2);
+        myPageTable.put(1,1);
+
     }
 }
 
