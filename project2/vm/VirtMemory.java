@@ -111,7 +111,7 @@ public class VirtMemory extends Memory{
 
                 //else it is in the page table contains the vpn, then they are in the same block and so they have the same pfn
                 else{                       
-                        try {
+                    try {
                         sameBlockPFN = PageTable.get_ptable_pfn(vpn);
                     } catch (NoKeyException e) {
                         e.printStackTrace();

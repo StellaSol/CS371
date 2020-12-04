@@ -10,7 +10,7 @@ public class MyVirtMemTest {
     //        static byte fce2(int adr) {
     //            return (byte) ((adr * 7 + 5) % 256 - 128);
     //        }
-    public static void main(String[] args) throws KeyAlreadyExistException {
+    public static void main(String[] args) throws KeyAlreadyExistException, NoKeyException {
 
     //     Memory m = new VirtMemory();
     //     m.startup();
@@ -73,10 +73,12 @@ public class MyVirtMemTest {
         //     }
         //     System.out.println("pruduct" + product);
         // }
-        MyPageTable myPageTable = new MyPageTable();
-        myPageTable.put(1,1);
-        myPageTable.put(2,2);
-        myPageTable.put(1,1);
+        // MyPageTable myPageTable = new MyPageTable();
+        // myPageTable.put(1,1);
+        // myPageTable.get_ptable_pfn(2);
+        //myPageTable.get_ptable_pfn(1);
+        // myPageTable.containsVPN(1);
+        // myPageTable.removePTE(1);
 
     }
 }

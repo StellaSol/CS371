@@ -7,7 +7,6 @@ Hash Table:  https://www.sanfoundry.com/c-program-implement-hash-tables-chaining
 */
 
 import java.util.*;
-import java.io.*;
 
 public class MyPageTable{
     //PAGE TABLE ATTRIBUTES
