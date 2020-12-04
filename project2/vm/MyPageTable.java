@@ -7,10 +7,11 @@ Hash Table:  https://www.sanfoundry.com/c-program-implement-hash-tables-chaining
 */
 
 import java.util.*;
+import java.io.*;
 
 public class MyPageTable{
     //PAGE TABLE ATTRIBUTES
-    private static int INITIAL_SIZE = 1024;
+    private static int INITIAL_SIZE = 1048;
     private LinkedList<PTE>[] PageTable = new LinkedList [INITIAL_SIZE];
     private LinkedList<PTE> DirtyBitsList = new LinkedList<PTE>(); //List to keep the PTE's that have been written to physical memory
     private int indexOfPageTable;
@@ -66,17 +67,31 @@ public class MyPageTable{
     }
     
     //Inserting an entry into Page Table in accordance to its key
-    public void put(int hashcode, int pfn){
+    public void put(int hashcode, int pfn) throws KeyAlreadyExistException{
         int key = hash(hashcode); // Retrieve the index
+        PTE headPTE; 
+        int getCounter = 0;
+        ListIterator<PTE> it = null;
+        it = PageTable[key].listIterator();   
+        //now you have the key to the bucket, iterate through the list to match the vpn and obtain pfn
+        while(it.hasNext()){
+            headPTE = PageTable[key].get(getCounter);
+            if(headPTE.vpn == hashcode){ 
+                throw new KeyAlreadyExistException("Key Already Exists");
+            }
+            else{
+                getCounter++;
+                it.next();
+            }
+        }
         head = new PTE(hashcode, pfn, true); //Make an entry with the hashCode/vpn, pfn, dirty bit
-    
         //add entry to both the Page Table and Dirty List
         PageTable[key].add(head); 
         DirtyBitsList.add(head);
     }
 
     //Iterating through the Page Table to check if vpn is there. Will return its corresponding pfn
-    public int contains(int hashCode){  
+    public int get_ptable_pfn(int hashCode){ //this is the get method because it returns the pfn
         PTE headPTE; 
         int getCounter = 0;
         int key = hash(hashCode); //get the key to traverse through the Page Table
@@ -106,8 +121,6 @@ public class MyPageTable{
      
         ListIterator<PTE> it = null;
         it = PageTable[key].listIterator();   
-    
-        
         //now you have the key to the bucket, iterate through the list to match the vpn and return a boolean value
         while(it.hasNext()){
             headPTE = PageTable[key].get(getCounter);
@@ -123,12 +136,35 @@ public class MyPageTable{
     }
 
     //Remove an entry based on the vpn
-    public void removePTE(int hashCode){
+    public void removePTE(int hashCode) throws NoKeyException{
         PTE headPTE; 
         int getCounter = 0;
         int key = hash(hashCode); //get the key to traverse through the Page Table
         ListIterator<PTE> it = null;
-        it = PageTable[key].listIterator();   
+        it = PageTable[key].listIterator();
+        boolean removed = false;
+        while(it.hasNext()){
+            headPTE = PageTable[key].get(getCounter);
+            if(headPTE.vpn == hashCode){ 
+                PageTable[key].remove(getCounter);
+                removed = true;
+            }
+            else{
+                getCounter++;
+                it.next();
+            }
+        }
+        if (removed != true){
+            throw new NoKeyException("Key does NOT exist");
+        }
+    }
+
+    public void remove(int hashCode){
+        PTE headPTE; 
+        int getCounter = 0;
+        int key = hash(hashCode); //get the key to traverse through the Page Table
+        ListIterator<PTE> it = null;
+        it = PageTable[key].listIterator();
         while(it.hasNext()){
             headPTE = PageTable[key].get(getCounter);
             if(headPTE.vpn == hashCode){ 
@@ -139,8 +175,9 @@ public class MyPageTable{
                 it.next();
             }
         }
+
     }
-    
+
     public LinkedList<PTE> returnDirtyBitsList() {
        return DirtyBitsList;
     }
