@@ -7,8 +7,8 @@ Please leave ""score"" cells blank for course staff
 If your code does not build,  your code will not receive more than 50% of max possible points",,,,,,
 ,,,,,,
 ,,,,,,
-Design (25%),Max score (%),Your answer/Your self-evalution,1st pass: autograder ,2nd pass: manual review,final score,
-UML diagram ,10,A,NA,"The major issue in your design is
+Design (25%),Max score (%),Your answer/Your self-evalution,1st pass: autograder,2nd pass: manual review,final score,
+UML diagram,10,A,NA,"The major issue in your design is
 the misuse of class-level members
 as temporary place holders. Why? Only 
 characteristics of the class or properties
@@ -64,6 +64,8 @@ Project Structure and Formatting (5%),Max score (%),Your answer/Your self-evalut
 Your github repo should be named “CS371”,,5,A,,,0
 "Your github repo CS371 must be private, and you must add the instructor(jyuan2pace) as a collaborator;  ",,,,,,
 All source code should be immediately under a folder called vm immediately under project1,and all design documents are under folder design immediately under project1,,,,,
-This completed grading sheet i csv format or grading_sheet.txt which includes the link to your completed grading sheet should should be under the folder project1 ,,,,,,
+This completed grading sheet i csv format or grading_sheet.txt which includes the link to your completed grading sheet should should be under the folder project1,,,,,,
+,,,,,,
+EXTRA CREDIT IS DONE: Write your own JUnit tests for contains/get/put/remove methods of MyPageTable ,5,A,,,,
 ,,,,Total,10,
 Final total score,,,,Total,88,
